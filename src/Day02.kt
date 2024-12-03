@@ -15,13 +15,12 @@ fun main() {
     check(part1(testInput) == 2)
     check(part2(testInput) == 4)
 
-    // Read the input from the `src/Day01.txt` file.
     val input = readInput("Day02")
     part1(input).println()
     part2(input).println()
 }
 
-private fun parseReports(input: List<String>): List<List<Int>> = input.map(::ints)
+private fun parseReports(input: List<String>): List<List<Int>> = input.map { it.ints() }
 private fun validate(report: List<Int>): Boolean = report
     .windowed(2)
     .all { (a, b) -> abs(a - b) in 1..3 }
