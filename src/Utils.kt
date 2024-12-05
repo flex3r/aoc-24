@@ -22,6 +22,18 @@ fun Any?.println() = println(this)
 
 fun String.ints(delimiter: String = " "): List<Int> = split(delimiter).map(String::toInt)
 
+fun <T> List<T>.pair() = this[0] to this[1]
+
+inline fun <T> Collection<T>.partitionBy(predicate: (T) -> Boolean): List<List<T>> {
+    return fold(mutableListOf(mutableListOf<T>())) { acc, it ->
+        when {
+            predicate(it) -> acc.add(mutableListOf())
+            else -> acc.last() += it
+        }
+        acc
+    }
+}
+
 fun List<String>.toGrid(): Map<Point, Char> = flatMapIndexed { y, line ->
     line.mapIndexed { x, c ->
         Point(x, y) to c
