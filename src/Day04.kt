@@ -14,7 +14,7 @@ fun main() {
         val grid = input.toGrid().withDefault { '.' }
         return grid.keys.sumOf { p ->
             Direction.diagonals.count { diagonal ->
-                listOf(diagonal, diagonal.rotate()).all { direction ->
+                listOf(diagonal, diagonal.turnRight()).all { direction ->
                     (-1..1).appendToString { grid.getValue(p + (direction * it)) } == "MAS"
                 }
             }

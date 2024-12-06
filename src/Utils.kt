@@ -2,6 +2,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.time.measureTime
 
 /**
  * Reads lines from the given input txt file.
@@ -19,6 +20,12 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+inline fun <T> measureAndPrintResult(crossinline block: () -> T) {
+    measureTime {
+        println(block())
+    }.also { println("Took $it") }
+}
 
 fun String.ints(delimiter: String = " "): List<Int> = split(delimiter).map(String::toInt)
 
@@ -65,8 +72,8 @@ data class Point(val x: Int, val y: Int) {
             this + Direction.UpRight,
         )
 
-    fun rotate() = copy(y, -x)
-    fun counterRotate() = copy(-y, x)
+    fun turnLeft() = copy(y, -x)
+    fun turnRight() = copy(-y, x)
 
     operator fun plus(other: Point) = copy(x = x + other.x, y = y + other.y)
     operator fun times(factor: Int) = copy(x = x * factor, y = y * factor)
@@ -105,4 +112,23 @@ fun Direction.asPoint() = when (this) {
     Direction.DownLeft -> Point(-1, 1)
     Direction.UpLeft -> Point(-1, -1)
     Direction.UpRight -> Point(1, -1)
+}
+
+fun <T> bfs(start: T, neighbors: (T) -> List<T>) = sequence {
+    val queue = ArrayDeque(listOf(start.withIndex(index = 0)))
+    val seen = mutableSetOf(start)
+    while (queue.isNotEmpty()) {
+        val (index, current) = queue.removeFirst().also { yield(it) }
+        neighbors(current).forEach { neighbor ->
+            if (seen.add(neighbor)) {
+                queue.add(neighbor.withIndex(index = index + 1))
+            }
+        }
+    }
+}
+
+fun <T> T.withIndex(index: Int) = IndexedValue(index, value = this)
+
+infix fun Point.inBoundsOf(lines: List<String>): Boolean {
+    return y in lines.indices && x in lines[0].indices
 }
