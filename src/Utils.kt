@@ -1,5 +1,7 @@
 import java.math.BigInteger
 import java.security.MessageDigest
+import java.util.*
+import kotlin.collections.ArrayDeque
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 import kotlin.time.measureTime
@@ -28,6 +30,8 @@ inline fun <T> measureAndPrintResult(crossinline block: () -> T) {
 }
 
 fun String.ints(delimiter: String = " "): List<Int> = split(delimiter).map(String::toInt)
+
+fun String.longs(delimiter: String = " "): List<Long> = split(delimiter).map(String::toLong)
 
 fun <T> List<T>.pair() = this[0] to this[1]
 
