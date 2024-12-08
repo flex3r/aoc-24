@@ -4,6 +4,7 @@ import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.math.abs
 import kotlin.time.measureTime
 
 /**
@@ -76,8 +77,8 @@ data class Point(val x: Int, val y: Int) {
             this + Direction.UpRight,
         )
 
-    fun turnLeft() = copy(y, -x)
-    fun turnRight() = copy(-y, x)
+    fun turnLeft() = copy(x = y, y = -x)
+    fun turnRight() = copy(x = -y, y = x)
 
     operator fun plus(other: Point) = copy(x = x + other.x, y = y + other.y)
     operator fun times(factor: Int) = copy(x = x * factor, y = y * factor)
@@ -135,4 +136,25 @@ fun <T> T.withIndex(index: Int) = IndexedValue(index, value = this)
 
 infix fun Point.inBoundsOf(lines: List<String>): Boolean {
     return y in lines.indices && x in lines[0].indices
+}
+
+fun <T> combinations(values: List<T>, m: Int) = sequence {
+    val n = values.size
+    val result = MutableList(m) { values[0] }
+    val stack = Stack<Int>()
+    stack.push(0)
+    while (stack.isNotEmpty()) {
+        var resIndex = stack.lastIndex
+        var arrIndex = stack.pop()
+
+        while (arrIndex < n) {
+            result[resIndex++] = values[arrIndex++]
+            stack.push(arrIndex)
+
+            if (resIndex == m) {
+                yield(result.toList())
+                break
+            }
+        }
+    }
 }
