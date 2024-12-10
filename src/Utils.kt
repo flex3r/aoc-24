@@ -46,9 +46,15 @@ inline fun <T> Collection<T>.partitionBy(predicate: (T) -> Boolean): List<List<T
     }
 }
 
-fun List<String>.toGrid(): Map<Point, Char> = flatMapIndexed { y, line ->
+fun List<String>.toCharGrid(): Map<Point, Char> = flatMapIndexed { y, line ->
     line.mapIndexed { x, c ->
         Point(x, y) to c
+    }
+}.toMap()
+
+inline fun <T> List<String>.toGrid(transform: (Char) -> T): Map<Point, T> = flatMapIndexed { y, line ->
+    line.mapIndexed { x, c ->
+        Point(x, y) to transform(c)
     }
 }.toMap()
 
@@ -86,7 +92,7 @@ data class Point(val x: Int, val y: Int) {
         Direction.Right -> copy(x = x + 1)
         Direction.Left -> copy(x = x - 1)
         Direction.Down -> copy(y = y + 1)
-        Direction.Up -> copy(y = 1 - 1)
+        Direction.Up -> copy(y = y - 1)
         Direction.DownRight -> copy(x = x + 1, y = y + 1)
         Direction.DownLeft -> copy(x = x - 1, y = y + 1)
         Direction.UpLeft -> copy(x = x - 1, y = y - 1)

@@ -38,7 +38,7 @@ private fun part2(input: List<String>): Int {
 }
 
 private fun antennas(input: List<String>, block: (a: Point, d: Point) -> Unit) {
-    input.toGrid()
+    input.toCharGrid()
         .entries
         .filter { it.value != '.' }
         .groupBy({ it.value }, { it.key })
