@@ -4,7 +4,7 @@ import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.io.path.Path
 import kotlin.io.path.readText
-import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.time.measureTime
 
 /**
@@ -52,6 +52,16 @@ fun List<String>.toCharGrid(): Map<Point, Char> = flatMapIndexed { y, line ->
     }
 }.toMap()
 
+fun Map<Point, Char>.printGrid() {
+    (0..keys.maxOf(Point::y)).forEach { y ->
+        (0..keys.maxOf(Point::x)).forEach { x ->
+            print(this[Point(x, y)])
+        }
+        kotlin.io.println()
+    }
+    kotlin.io.println()
+}
+
 inline fun <T> List<String>.toGrid(transform: (Char) -> T): Map<Point, T> = flatMapIndexed { y, line ->
     line.mapIndexed { x, c ->
         Point(x, y) to transform(c)
@@ -87,17 +97,10 @@ data class Point(val x: Int, val y: Int) {
     fun turnRight() = copy(x = -y, y = x)
 
     operator fun plus(other: Point) = copy(x = x + other.x, y = y + other.y)
+    operator fun plus(direction: Direction) = plus(direction.asPoint())
+    operator fun minus(other: Point) = copy(x = x - other.x, y = y - other.y)
+    operator fun minus(direction: Direction) = minus(direction.asPoint())
     operator fun times(factor: Int) = copy(x = x * factor, y = y * factor)
-    operator fun plus(direction: Direction) = when (direction) {
-        Direction.Right -> copy(x = x + 1)
-        Direction.Left -> copy(x = x - 1)
-        Direction.Down -> copy(y = y + 1)
-        Direction.Up -> copy(y = y - 1)
-        Direction.DownRight -> copy(x = x + 1, y = y + 1)
-        Direction.DownLeft -> copy(x = x - 1, y = y + 1)
-        Direction.UpLeft -> copy(x = x - 1, y = y - 1)
-        Direction.UpRight -> copy(x = x + 1, y = y - 1)
-    }
 }
 
 enum class Direction {
@@ -106,11 +109,23 @@ enum class Direction {
     companion object {
         val cardinals = listOf(
             Right, Left, Down, Up
-        ).map { it.asPoint() }
+        )
+        val cardinalPoints = cardinals.map { it.asPoint() }
 
-        val diagonals = listOf(
+        val diagonalPoints = listOf(
             DownRight, DownLeft, UpLeft, UpRight
         ).map { it.asPoint() }
+    }
+
+    val opposite get() = when (this) {
+        Right -> Left
+        Left -> Right
+        Down -> Up
+        Up -> Down
+        DownRight -> UpLeft
+        DownLeft -> UpRight
+        UpLeft -> DownRight
+        UpRight -> DownLeft
     }
 }
 

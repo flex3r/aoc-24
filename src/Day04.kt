@@ -1,7 +1,7 @@
 fun main() {
     fun part1(input: List<String>): Int {
         val grid = input.toCharGrid().withDefault { '.' }
-        val directions = Direction.cardinals + Direction.diagonals
+        val directions = Direction.cardinalPoints + Direction.diagonalPoints
         val match = "XMAS"
         return grid.keys.sumOf { p ->
             directions.count { direction ->
@@ -13,7 +13,7 @@ fun main() {
     fun part2(input: List<String>): Int {
         val grid = input.toCharGrid().withDefault { '.' }
         return grid.keys.sumOf { p ->
-            Direction.diagonals.count { diagonal ->
+            Direction.diagonalPoints.count { diagonal ->
                 listOf(diagonal, diagonal.turnRight()).all { direction ->
                     (-1..1).appendToString { grid.getValue(p + (direction * it)) } == "MAS"
                 }

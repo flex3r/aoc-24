@@ -53,7 +53,7 @@ private fun findRegion(plot: Char, start: Point, grid: Map<Point, Char>): Set<Po
 
 private fun perimeter(region: Set<Point>) = region.sumOf { plot -> 4 - plot.cardinal.count { it in region } }
 
-private fun sides(region: Set<Point>) = Direction.cardinals.sumOf { dir ->
+private fun sides(region: Set<Point>) = Direction.cardinalPoints.sumOf { dir ->
     val shifted = mutableMapOf<Point, Char>()
     region.forEach { p ->
         val outside = (p + dir).takeIf { it !in region } ?: return@forEach
